@@ -1,0 +1,39 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package automatedattendance.util;
+
+/**
+ *
+ * @author danle
+ */
+public class Enums {
+    public enum UserRole {
+        STUDENT,
+        TEACHER
+    }
+    
+    public enum AttendanceStatus {
+        PRESENT,
+        ABSENT
+    }
+    
+    public enum AttendanceRemark {
+        ON_TIME,
+        LATE,
+        LEFT_EARLY,
+        NO_RECORD,
+        EXCUSED
+    }
+    
+    public enum SubjectScheduleDayOfWeek {
+        MONDAY,
+        TUESDAY,
+        WEDNESDAY,
+        THURSDAY,
+        FRIDAY,
+        SATURDAY
+    }
+}
