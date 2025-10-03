@@ -3,14 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package automatedattendance;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import javax.swing.Timer;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 
 /**
  *
@@ -23,8 +16,6 @@ public class AutomatedAttendance extends javax.swing.JFrame {
      */
     public AutomatedAttendance() {
         initComponents();
-        startClock();
-        
     }
 
     /**
@@ -257,17 +248,7 @@ public class AutomatedAttendance extends javax.swing.JFrame {
             }
         });
     }
-private void startClock() {
-    Timer timer = new Timer(1000, new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Date now = new Date();
-            SimpleDateFormat sdf = new SimpleDateFormat("EEEE, MMMM dd, yyyy HH:mm:ss");
-            lblDate.setText(sdf.format(now));
-        }
-    });
-    timer.start();
-}
+
     // Variables declaration - do not modify                     
     private javax.swing.JButton btnTimeIn;
     private javax.swing.JButton btnTimeOut;
