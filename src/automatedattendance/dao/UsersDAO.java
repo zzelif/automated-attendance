@@ -16,20 +16,21 @@ import java.sql.*;
  * @author danle
  */
 public class UsersDAO {
-    public User getUserByUsername(String username) {
-        String sql = "SELECT * FROM users WHERE username = ?";
+    public User authenticate(String username, String password) {
+        String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, username);
+            stmt.setString(2, password);
             ResultSet rs = stmt.executeQuery();
-
+            
             if (rs.next()) {
                 return new User(
-                    rs.getInt("user_id"),
-                    rs.getString("username"),
-                    rs.getString("password"),
-                    UserRole.valueOf(rs.getString("role").toUpperCase())
+                        rs.getInt("user_id"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        UserRole.valueOf(rs.getString("role").toUpperCase())
                 );
             }
         } catch (SQLException e) {
