@@ -8,6 +8,8 @@ package automatedattendance.model;
 import automatedattendance.util.Enums.AttendanceRemark;
 import automatedattendance.util.Enums.AttendanceStatus;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 /**
  *
  * @author danle
@@ -16,16 +18,16 @@ public class Attendance {
     private int attendanceId;
     private int studentId;
     private int scheduleId;
-    private String date;
-    private String timeIn;
-    private String timeOut;
+    private LocalDate date;
+    private LocalTime timeIn;
+    private LocalTime timeOut;
     private AttendanceStatus status;
     private AttendanceRemark remarks;
     
     private String studentName;
     private String subjectName;
     
-    public Attendance(int attendanceId, int studentId, int scheduleId, String date, String timeIn, String timeOut, AttendanceStatus status, AttendanceRemark remarks ) {
+    public Attendance(int attendanceId, int studentId, int scheduleId, LocalDate date, LocalTime timeIn, LocalTime timeOut, AttendanceStatus status, AttendanceRemark remarks ) {
         this.attendanceId = attendanceId;
         this.studentId = studentId;
         this.scheduleId = scheduleId;
@@ -47,14 +49,14 @@ public class Attendance {
     public int getScheduleId() { return scheduleId; }
     public void setScheduleId(int scheduleId) { this.scheduleId = scheduleId; }
 
-    public String getDate() { return date; }
-    public void setDate(String date) { this.date = date; }
+    public LocalDate getDate() { return date; }
+    public void setDate(LocalDate date) { this.date = date; }
 
-    public String getTimeIn() { return timeIn; }
-    public void setTimeIn(String timeIn) { this.timeIn = timeIn; }
+    public LocalTime getTimeIn() { return timeIn; }
+    public void setTimeIn(LocalTime timeIn) { this.timeIn = timeIn; }
 
-    public String getTimeOut() { return timeOut; }
-    public void setTimeOut(String timeOut) { this.timeOut = timeOut; }
+    public LocalTime getTimeOut() { return timeOut; }
+    public void setTimeOut(LocalTime timeOut) { this.timeOut = timeOut; }
 
     public AttendanceStatus getStatus() { return status; }
     public void setStatus(AttendanceStatus status) { this.status = status; }

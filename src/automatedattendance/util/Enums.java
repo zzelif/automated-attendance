@@ -11,29 +11,29 @@ package automatedattendance.util;
  */
 public class Enums {
     public enum UserRole {
-        STUDENT,
-        TEACHER
+        student,
+        teacher
     }
     
     public enum AttendanceStatus {
-        PRESENT,
-        ABSENT
+        present,
+        absent
     }
     
     public enum AttendanceRemark {
-        ON_TIME,
-        LATE,
-        LEFT_EARLY,
-        NO_RECORD,
-        EXCUSED
+        on_time,
+        late,
+        left_early,
+        no_record,
+        excused
     }
     
     public enum SubjectScheduleDayOfWeek {
-        MONDAY,
-        TUESDAY,
-        WEDNESDAY,
-        THURSDAY,
-        FRIDAY,
-        SATURDAY
+        monday,
+        tuesday,
+        wednesday,
+        thursday,
+        friday,
+        saturday
     }
 }
