@@ -16,6 +16,7 @@ public class AutomatedAttendance extends javax.swing.JFrame {
      */
     public AutomatedAttendance() {
         initComponents();
+        startClock();
     }
 
     /**
@@ -214,6 +215,17 @@ public class AutomatedAttendance extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_textField1ActionPerformed
 
+    private void startClock() {
+        javax.swing.Timer timer = new javax.swing.Timer(1000, e -> {
+            java.time.LocalDateTime now = java.time.LocalDateTime.now();
+            java.time.format.DateTimeFormatter fmt =
+                    java.time.format.DateTimeFormatter.ofPattern("EEEE MMMM dd, yyyy HH:mm:ss");
+            lblDate.setText(now.format(fmt));
+            
+        });
+        timer.start();
+    }
+    
     /**
      * @param args the command line arguments
      */
