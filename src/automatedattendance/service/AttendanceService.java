@@ -21,7 +21,7 @@ public class AttendanceService {
     private final StudentsDAO studentsDAO = new StudentsDAO();
     private final EnrollmentsDAO enrollmentsDAO = new EnrollmentsDAO();
     private final ScheduleDAO scheduleDAO = new ScheduleDAO();
-    private final SubjectsDAO subjectsDAO = new SubjectsDAO();
+//    private final SubjectsDAO subjectsDAO = new SubjectsDAO();
     
     public String timeIn(User currentUser, String studentNumber) {
         Student student = studentsDAO.getStudentByNumber(studentNumber);
