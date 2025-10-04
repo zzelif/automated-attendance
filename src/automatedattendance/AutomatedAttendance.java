@@ -5,18 +5,39 @@
  */
 package automatedattendance;
 
+import automatedattendance.dao.AttendanceDAO;
+import automatedattendance.dao.ScheduleDAO;
+import automatedattendance.dao.UsersDAO;
+import automatedattendance.model.Attendance;
+import automatedattendance.model.SubjectSchedule;
+import automatedattendance.service.AttendanceService;
+import automatedattendance.model.User;
+import automatedattendance.util.Enums;
+import java.time.LocalDate;
+import java.util.List;
+
 /**
  *
  * @author danle
  */
 public class AutomatedAttendance extends javax.swing.JFrame {
+    private AttendanceService attendanceService;
+    private User currentUser;
 
     /**
      * Creates new form AutomatedAttendance
      */
-    public AutomatedAttendance() {
+    public AutomatedAttendance(User currentUser) {
+        this.currentUser = currentUser;
+        this.attendanceService = new AttendanceService();
         initComponents();
         startClock();
+        
+        if (currentUser.getRole() == Enums.UserRole.student) {
+            System.out.println("DEBUG: Setting field with " + currentUser.getStudentNumber());
+            txtStudentNumber.setText(currentUser.getStudentNumber());
+            txtStudentNumber.setEditable(false);
+        }
     }
 
     /**
@@ -35,10 +56,10 @@ public class AutomatedAttendance extends javax.swing.JFrame {
         btnTimeOut = new javax.swing.JButton();
         lblResult = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jLabel2 = new javax.swing.JLabel();
+        tblAttendance = new javax.swing.JTable();
+        lblSubjectSched = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        textField1 = new java.awt.TextField();
+        txtStudentNumber = new java.awt.TextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 102, 102));
@@ -81,9 +102,9 @@ public class AutomatedAttendance extends javax.swing.JFrame {
         lblResult.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblResult.setText("Result: Waiting...");
 
-        jTable1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jTable1.setFont(new java.awt.Font("Century Gothic", 0, 11)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblAttendance.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        tblAttendance.setFont(new java.awt.Font("Century Gothic", 0, 11)); // NOI18N
+        tblAttendance.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -108,22 +129,22 @@ public class AutomatedAttendance extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jTable1.setSelectionForeground(new java.awt.Color(153, 204, 255));
-        jScrollPane1.setViewportView(jTable1);
+        tblAttendance.setSelectionForeground(new java.awt.Color(153, 204, 255));
+        jScrollPane1.setViewportView(tblAttendance);
 
-        jLabel2.setFont(new java.awt.Font("Century Gothic", 3, 12)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Subject and Schedule");
+        lblSubjectSched.setFont(new java.awt.Font("Century Gothic", 3, 12)); // NOI18N
+        lblSubjectSched.setForeground(new java.awt.Color(255, 255, 255));
+        lblSubjectSched.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblSubjectSched.setText("Subject and Schedule");
 
         jLabel3.setFont(new java.awt.Font("Century Gothic", 3, 12)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel3.setText("ENTER STUDENT NUMBER");
 
-        textField1.addActionListener(new java.awt.event.ActionListener() {
+        txtStudentNumber.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textField1ActionPerformed(evt);
+                txtStudentNumberActionPerformed(evt);
             }
         });
 
@@ -143,7 +164,7 @@ public class AutomatedAttendance extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(textField1, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(txtStudentNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(53, 53, 53)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -157,7 +178,7 @@ public class AutomatedAttendance extends javax.swing.JFrame {
                         .addContainerGap(22, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblSubjectSched, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(70, 70, 70))))
             .addComponent(lblDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -173,11 +194,11 @@ public class AutomatedAttendance extends javax.swing.JFrame {
                         .addGap(4, 4, 4)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblSubjectSched, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(textField1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtStudentNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnTimeIn)
@@ -186,8 +207,6 @@ public class AutomatedAttendance extends javax.swing.JFrame {
                         .addComponent(lblResult, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
-
-        jLabel3.getAccessibleContext().setAccessibleName("ENTER STUDENT NUMBER");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -205,16 +224,46 @@ public class AutomatedAttendance extends javax.swing.JFrame {
 
     private void btnTimeInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimeInActionPerformed
         // TODO add your handling code here:
+        String studentNumber = txtStudentNumber.getText().trim();
+        
+        String result = attendanceService.logTimeIn(currentUser, studentNumber);
+        lblResult.setText(result);
+        refreshAttendanceTable();
+        clearResults();
     }//GEN-LAST:event_btnTimeInActionPerformed
 
     private void btnTimeOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimeOutActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnTimeOutActionPerformed
 
-    private void textField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textField1ActionPerformed
+    private void txtStudentNumberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtStudentNumberActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_textField1ActionPerformed
+    }//GEN-LAST:event_txtStudentNumberActionPerformed
 
+    private void refreshAttendanceTable() {
+        SubjectSchedule schedule = new ScheduleDAO().getCurrentSchedule();
+        if (schedule == null) {
+            return;
+        }
+        
+        AttendanceDAO attendanceDAO = new AttendanceDAO();
+        List<Attendance> records = attendanceDAO.getAttendanceByScheduleAndDate(schedule.getScheduleId(), LocalDate.now());
+        
+        javax.swing.table.DefaultTableModel model = 
+            (javax.swing.table.DefaultTableModel) tblAttendance.getModel();
+        model.setRowCount(0);
+        
+        for (Attendance att: records) {
+            model.addRow(new Object[] {
+                att.getStudentName(),
+                att.getTimeIn(),
+                att.getTimeOut(),
+                att.getStatus(),
+                att.getRemarks()
+            });
+        }
+    }
+    
     private void startClock() {
         javax.swing.Timer timer = new javax.swing.Timer(1000, e -> {
             java.time.LocalDateTime now = java.time.LocalDateTime.now();
@@ -226,52 +275,46 @@ public class AutomatedAttendance extends javax.swing.JFrame {
         timer.start();
     }
     
+    private void clearResults() {
+        new javax.swing.Timer(1000, ev -> {
+            lblResult.setText("Result: Waiting...");
+            txtStudentNumber.setText("");
+            txtStudentNumber.requestFocus();
+        }) {{
+            setRepeats(false);
+            start();
+        }};
+    }
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AutomatedAttendance.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AutomatedAttendance.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AutomatedAttendance.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AutomatedAttendance.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    java.awt.EventQueue.invokeLater(new Runnable() {
+        public void run() {
+            UsersDAO usersDAO = new UsersDAO();
+            
+            String username = "student01";
+            String password = "pass123";
+            
+            User dummyUser = usersDAO.authenticate(username, password);
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AutomatedAttendance().setVisible(true);
-            }
-        });
-    }
+            new AutomatedAttendance(dummyUser).setVisible(true);
+        }
+    });
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnTimeIn;
     private javax.swing.JButton btnTimeOut;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblDate;
     private javax.swing.JLabel lblResult;
-    private java.awt.TextField textField1;
+    private javax.swing.JLabel lblSubjectSched;
+    private javax.swing.JTable tblAttendance;
+    private java.awt.TextField txtStudentNumber;
     // End of variables declaration//GEN-END:variables
 }

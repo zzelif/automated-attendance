@@ -23,7 +23,7 @@ public class AttendanceService {
     private final ScheduleDAO scheduleDAO = new ScheduleDAO();
 //    private final SubjectsDAO subjectsDAO = new SubjectsDAO();
     
-    public String timeIn(User currentUser, String studentNumber) {
+    public String logTimeIn(User currentUser, String studentNumber) {
         Student student = studentsDAO.getStudentByNumber(studentNumber);
         SubjectSchedule currentSchedule = scheduleDAO.getCurrentSchedule();
         

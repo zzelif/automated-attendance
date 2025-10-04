@@ -24,18 +24,28 @@ public class UsersDAO {
             stmt.setString(1, username);
             stmt.setString(2, password);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
-                return new User(
+                User user = new User(
                         rs.getInt("user_id"),
                         rs.getString("username"),
                         rs.getString("password"),
-                        UserRole.valueOf(rs.getString("role").toUpperCase())
+                        UserRole.valueOf(rs.getString("role"))
                 );
+
+                if (user.getRole() == UserRole.student) {
+                    StudentsDAO studentDAO = new StudentsDAO();
+                    String studentNumber = studentDAO.getStudentNumberByUserId(user.getUserId());
+                    user.setStudentNumber(studentNumber);
+                    
+                    System.out.println("DEBUG: Loaded student number = " + studentNumber);
+                }
+                return user;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
+
 }

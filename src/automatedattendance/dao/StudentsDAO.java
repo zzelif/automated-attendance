@@ -42,6 +42,21 @@ public class StudentsDAO {
         return null;
     }
     
+    public String getStudentNumberByUserId(int userId) {
+        String sql = "SELECT student_number FROM students WHERE user_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("student_number");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
     public List<Student> getStudentsBySubject(int subjectId) {
         final List<Student> students = new ArrayList<>();
         final String sql = "SELECT s.* FROM students s " +
