@@ -48,10 +48,10 @@ public class AttendanceService {
         attendance.setScheduleId(currentSchedule.getScheduleId());
         attendance.setDate(today);
         attendance.setTimeIn(LocalTime.now());
-        attendance.setStatus(AttendanceStatus.present);
+        attendance.setStatus(AttendanceStatus.PRESENT);
         
         LocalTime startTime = LocalTime.parse(currentSchedule.getStartTime());
-        attendance.setRemarks(LocalTime.now().isAfter(startTime) ? AttendanceRemark.late : AttendanceRemark.on_time);
+        attendance.setRemarks(LocalTime.now().isAfter(startTime) ? AttendanceRemark.LATE : AttendanceRemark.ON_TIME);
 
         return attendanceDAO.logTimeIn(attendance) ? "Time-in successful!" : "Error logging time in.";
     }
@@ -80,7 +80,7 @@ public class AttendanceService {
                 Attendance att = attendanceDAO.getAttendanceByStudentScheduleDate(
                         student.getStudentId(), currentSchedule.getScheduleId(), today.toString());
                 if (att != null) {
-                    attendanceDAO.updateRemarks(att.getAttendanceId(), AttendanceRemark.left_early.name());
+                    attendanceDAO.updateRemarks(att.getAttendanceId(), AttendanceRemark.LEFT_EARLY.name());
                 }
             }
             return "Time-out successful!";
@@ -114,8 +114,8 @@ public class AttendanceService {
                         today,
                         null,
                         null,
-                        AttendanceStatus.absent,
-                        AttendanceRemark.no_record
+                        AttendanceStatus.ABSENT,
+                        AttendanceRemark.NO_RECORD
                 );
                 attendanceDAO.insertAbsent(absent);
             }

@@ -33,7 +33,7 @@ public class UsersDAO {
                         UserRole.valueOf(rs.getString("role"))
                 );
 
-                if (user.getRole() == UserRole.student) {
+                if (user.getRole() == UserRole.STUDENT) {
                     StudentsDAO studentDAO = new StudentsDAO();
                     String studentNumber = studentDAO.getStudentNumberByUserId(user.getUserId());
                     user.setStudentNumber(studentNumber);

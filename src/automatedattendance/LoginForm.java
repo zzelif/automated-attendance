@@ -152,13 +152,39 @@ public class LoginForm extends javax.swing.JFrame {
 
     private void btn_loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_loginActionPerformed
         UsersDAO usersDAO = new UsersDAO();
-        
-        String userName = input_username.getText().toString();
+
+        String userName = input_username.getText().trim();
         String password = new String(input_password.getPassword());
-        
+
         User user = usersDAO.authenticate(userName, password);
+
+        if (user == null) {
+            JOptionPane.showMessageDialog(this, "Invalid credentials!", "Login Failed", JOptionPane.ERROR_MESSAGE);
+            input_username.setText("");
+            input_password.setText("");
+            return;
+        }
         
-        new AutomatedAttendance(user).setVisible(true);
+        // Redirect based on role
+        switch (user.getRole()) {
+            case STUDENT:
+                java.awt.EventQueue.invokeLater(() -> {
+                    new AutomatedAttendance(user).setVisible(true);
+                });
+                break;
+//            case TEACHER:
+//                java.awt.EventQueue.invokeLater(() -> {
+//                    new TeacherFrame(user).setVisible(true);
+//                });
+//     
+//                break;
+            default:
+                JOptionPane.showMessageDialog(this, "Unknown role: " + user.getRole(), "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+        }
+
+        // Close login window after successful login
+        this.dispose();
     }//GEN-LAST:event_btn_loginActionPerformed
 
     /**
