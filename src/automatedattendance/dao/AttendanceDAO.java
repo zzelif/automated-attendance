@@ -109,7 +109,10 @@ public class AttendanceDAO {
     
     public List<Attendance> getAttendanceBySchedule(int scheduleId) {
         final List<Attendance> records = new ArrayList<>();
-        final String sql = "SELECT * FROM attendance WHERE schedule_id = ?";
+        final String sql = "SELECT a.*, s.first_name, s.last_name " +
+                           "FROM attendance a " +
+                           "JOIN students s ON a.student_id = s.student_id " +
+                           "WHERE a.schedule_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -118,15 +121,19 @@ public class AttendanceDAO {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Attendance att = new Attendance(
-                        rs.getInt("attendance_id"),
-                        rs.getInt("student_id"),
-                        rs.getInt("schedule_id"),
-                        rs.getDate("date").toLocalDate(),
-                        rs.getTime("time_in") != null ? rs.getTime("time_in").toLocalTime() : null,
-                        rs.getTime("time_out") != null ? rs.getTime("time_out").toLocalTime() : null,
-                        AttendanceStatus.valueOf(rs.getString("status")),
-                        AttendanceRemark.valueOf(rs.getString("remarks"))
+                    rs.getInt("attendance_id"),
+                    rs.getInt("student_id"),
+                    rs.getInt("schedule_id"),
+                    rs.getDate("date").toLocalDate(),
+                    rs.getTime("time_in") != null ? rs.getTime("time_in").toLocalTime() : null,
+                    rs.getTime("time_out") != null ? rs.getTime("time_out").toLocalTime() : null,
+                    AttendanceStatus.valueOf(rs.getString("status")),
+                    AttendanceRemark.valueOf(rs.getString("remarks"))
                 );
+                
+                String fullName = rs.getString("first_name") + " " + rs.getString("last_name");
+                att.setStudentName(fullName);
+                
                 records.add(att);
             }
         } catch (SQLException e) {
@@ -137,7 +144,10 @@ public class AttendanceDAO {
     
     public List<Attendance> getAttendanceByScheduleAndDate(int scheduleId, LocalDate date) {
         final List<Attendance> records = new ArrayList<>();
-        final String sql = "SELECT * FROM attendance WHERE schedule_id = ? AND date = ?";
+        final String sql = "SELECT a.*, s.first_name, s.last_name " +
+                           "FROM attendance a " +
+                           "JOIN students s ON a.student_id = s.student_id " +
+                           "WHERE a.schedule_id = ? AND a.date = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -146,7 +156,7 @@ public class AttendanceDAO {
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                records.add(new Attendance(
+                Attendance att = new Attendance(
                     rs.getInt("attendance_id"),
                     rs.getInt("student_id"),
                     rs.getInt("schedule_id"),
@@ -155,7 +165,12 @@ public class AttendanceDAO {
                     rs.getTime("time_out") != null ? rs.getTime("time_out").toLocalTime() : null,
                     AttendanceStatus.valueOf(rs.getString("status")),
                     AttendanceRemark.valueOf(rs.getString("remarks"))
-                ));
+                );
+                
+                String fullName = rs.getString("first_name") + " " + rs.getString("last_name");
+                att.setStudentName(fullName);
+                
+                records.add(att);
             }
         } catch (SQLException e) {
             e.printStackTrace();
