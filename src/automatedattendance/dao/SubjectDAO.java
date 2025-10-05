@@ -20,6 +20,28 @@ import java.util.List;
  */
 public class SubjectDAO {
     
+    public Subject getSubjectById(int subjectId) {
+        String sql = "SELECT * FROM subjects WHERE subject_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, subjectId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new Subject(
+                    rs.getInt("subject_id"),
+                    rs.getString("subject_code"),
+                    rs.getString("subject_name"),
+                    rs.getInt("teacher_id")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    } 
+    
     public List<Subject> getAllSubjects() {
         List<Subject> subjects = new ArrayList<>();
         String sql = "SELECT * FROM subjects";
@@ -43,7 +65,7 @@ public class SubjectDAO {
     
     public List<Subject> getSubjectsByTeacherId(int teacherId) {
         List<Subject> subjects = new ArrayList<>();
-        String sql = "SELECT * FROM subject WHERE teacher_id = ?";
+        String sql = "SELECT * FROM subjects WHERE teacher_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, teacherId);

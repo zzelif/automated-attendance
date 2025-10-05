@@ -27,6 +27,7 @@ public class AutomatedAttendance extends javax.swing.JFrame {
 
     /**
      * Creates new form AutomatedAttendance
+     * @param currentUser
      */
     public AutomatedAttendance(User currentUser) {
         this.currentUser = currentUser;

@@ -36,4 +36,21 @@ public class Enums {
         FRIDAY,
         SATURDAY
     }
+    
+    public static AttendanceRemark parseRemark(String dbValue) {
+        if (dbValue == null || dbValue.trim().isEmpty()) {
+            return AttendanceRemark.NO_RECORD;
+        }
+
+        try {
+            return AttendanceRemark.valueOf(
+                dbValue.trim().toUpperCase().replace(" ", "_")
+            );
+        } catch (IllegalArgumentException e) {
+            System.err.println("WARNING: Unknown remark '" + dbValue + "' — defaulting to NO_RECORD");
+            return AttendanceRemark.NO_RECORD;
+        }
+    }
+
+    
 }

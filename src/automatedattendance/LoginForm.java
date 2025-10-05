@@ -5,6 +5,7 @@
 package automatedattendance;
 import automatedattendance.model.User;
 import automatedattendance.dao.UsersDAO;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 /**
  *
@@ -12,7 +13,7 @@ import javax.swing.JOptionPane;
  */
 public class LoginForm extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LoginForm.class.getName());
+    private static final Logger logger = Logger.getLogger(LoginForm.class.getName());
 
     /**
      * Creates new form LoginForm
@@ -172,12 +173,12 @@ public class LoginForm extends javax.swing.JFrame {
                     new AutomatedAttendance(user).setVisible(true);
                 });
                 break;
-//            case TEACHER:
-//                java.awt.EventQueue.invokeLater(() -> {
-//                    new TeacherFrame(user).setVisible(true);
-//                });
-//     
-//                break;
+            case TEACHER:
+                java.awt.EventQueue.invokeLater(() -> {
+                    new TeacherForm(user).setVisible(true);
+                });
+     
+                break;
             default:
                 JOptionPane.showMessageDialog(this, "Unknown role: " + user.getRole(), "Error", JOptionPane.ERROR_MESSAGE);
                 return;

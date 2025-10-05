@@ -9,6 +9,7 @@ import automatedattendance.db.DatabaseConnection;
 import automatedattendance.model.Attendance;
 import automatedattendance.util.Enums.AttendanceRemark;
 import automatedattendance.util.Enums.AttendanceStatus;
+import static automatedattendance.util.Enums.parseRemark;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -128,7 +129,7 @@ public class AttendanceDAO {
                     rs.getTime("time_in") != null ? rs.getTime("time_in").toLocalTime() : null,
                     rs.getTime("time_out") != null ? rs.getTime("time_out").toLocalTime() : null,
                     AttendanceStatus.valueOf(rs.getString("status")),
-                    AttendanceRemark.valueOf(rs.getString("remarks"))
+                    parseRemark(rs.getString("remarks"))
                 );
                 
                 String fullName = rs.getString("first_name") + " " + rs.getString("last_name");
@@ -163,8 +164,8 @@ public class AttendanceDAO {
                     rs.getDate("date").toLocalDate(),
                     rs.getTime("time_in") != null ? rs.getTime("time_in").toLocalTime() : null,
                     rs.getTime("time_out") != null ? rs.getTime("time_out").toLocalTime() : null,
-                    AttendanceStatus.valueOf(rs.getString("status")),
-                    AttendanceRemark.valueOf(rs.getString("remarks"))
+                    AttendanceStatus.valueOf(rs.getString("status").toUpperCase()),
+                    AttendanceRemark.valueOf(rs.getString("remarks").replace(" ", "_"))
                 );
                 
                 String fullName = rs.getString("first_name") + " " + rs.getString("last_name");
@@ -177,6 +178,24 @@ public class AttendanceDAO {
         }
         return records;
     }
+    
+    public List<LocalDate> getAvailableDatesBySchedule(int scheduleId) {
+        List<LocalDate> dates = new ArrayList<>();
+        String sql = "SELECT DISTINCT date FROM attendance WHERE schedule_id = ? ORDER BY date DESC";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, scheduleId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                dates.add(rs.getDate("date").toLocalDate());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return dates;
+    }
+
     
     public boolean insertAbsent(Attendance attendance) {
         final String sql = "INSERT INTO attendance (student_id, schedule_id, date, status, remarks) " +

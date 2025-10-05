@@ -10,7 +10,7 @@ public class TeacherDAO {
 
     // Get teacher by user_id (for login use)
     public Teacher getTeacherByUserId(int userId) {
-        String sql = "SELECT * FROM teacher WHERE user_id = ?";
+        String sql = "SELECT * FROM teachers WHERE user_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, userId);
@@ -34,7 +34,7 @@ public class TeacherDAO {
     // Get all teachers (optional)
     public List<Teacher> getAllTeachers() {
         List<Teacher> teachers = new ArrayList<>();
-        String sql = "SELECT * FROM teacher";
+        String sql = "SELECT * FROM teachers";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -54,7 +54,7 @@ public class TeacherDAO {
         return teachers;
     }
 
-    Teacher getTeacherByTeacherId(int i) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+//    Teacher getTeacherByTeacherId(int i) {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//    }
 }

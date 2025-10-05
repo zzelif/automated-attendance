@@ -8,13 +8,18 @@ package automatedattendance;
 import automatedattendance.dao.AttendanceDAO;
 import automatedattendance.dao.ScheduleDAO;
 import automatedattendance.dao.SubjectDAO;
+import automatedattendance.dao.TeacherDAO;
 import automatedattendance.model.Attendance;
 import automatedattendance.model.Subject;
 import automatedattendance.model.SubjectSchedule;
+import automatedattendance.model.Teacher;
+import automatedattendance.model.User;
 import automatedattendance.service.AttendanceService;
+
 import java.time.LocalDate;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -22,14 +27,20 @@ import javax.swing.table.DefaultTableModel;
  * @author Puddles
  */
 public class TeacherForm extends javax.swing.JFrame {
+    private User currentUser;
     private List<Subject> subjects;
     AttendanceService getAttendance = new AttendanceService();
+    
 
     /**
      * Creates new form TeacherForm
+     * @param currentUser
      */
-    public TeacherForm() {
+    public TeacherForm(User currentUser) {
+        this.currentUser = currentUser;
         initComponents();
+        startClock();
+        setGreetings();
     }
 
     /**
@@ -46,9 +57,13 @@ public class TeacherForm extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblAttendance = new javax.swing.JTable();
-        lblSubjectSched = new javax.swing.JLabel();
         cmbSubjects = new javax.swing.JComboBox<>();
         btnRefresh = new javax.swing.JButton();
+        cmbSchedules = new javax.swing.JComboBox<>();
+        cmbDates = new javax.swing.JComboBox<>();
+        btnFilter = new javax.swing.JButton();
+        btnLogOutAccount = new javax.swing.JButton();
+        lblGreetings = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -65,7 +80,7 @@ public class TeacherForm extends javax.swing.JFrame {
         lblDate.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblDate.setText("Date and Time");
 
-        jLabel1.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("STUDENTS' ATTENDANCE");
@@ -74,23 +89,23 @@ public class TeacherForm extends javax.swing.JFrame {
         tblAttendance.setFont(new java.awt.Font("Century Gothic", 0, 11)); // NOI18N
         tblAttendance.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Name", "Time In", "Time Out", "Status", "Remarks"
+                "Name", "Date", "Time In", "Time Out", "Status", "Remarks"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -99,11 +114,6 @@ public class TeacherForm extends javax.swing.JFrame {
         });
         tblAttendance.setSelectionForeground(new java.awt.Color(153, 204, 255));
         jScrollPane1.setViewportView(tblAttendance);
-
-        lblSubjectSched.setFont(new java.awt.Font("Century Gothic", 3, 12)); // NOI18N
-        lblSubjectSched.setForeground(new java.awt.Color(255, 255, 255));
-        lblSubjectSched.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblSubjectSched.setText("Subject and Schedule");
 
         cmbSubjects.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -118,59 +128,105 @@ public class TeacherForm extends javax.swing.JFrame {
             }
         });
 
+        cmbSchedules.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbSchedulesActionPerformed(evt);
+            }
+        });
+
+        btnFilter.setText("Filter");
+        btnFilter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFilterActionPerformed(evt);
+            }
+        });
+
+        btnLogOutAccount.setText("Log Out");
+        btnLogOutAccount.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogOutAccountActionPerformed(evt);
+            }
+        });
+
+        lblGreetings.setBackground(new java.awt.Color(0, 0, 0));
+        lblGreetings.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        lblGreetings.setForeground(new java.awt.Color(255, 255, 255));
+        lblGreetings.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cmbSchedules, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmbDates, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(0, 188, Short.MAX_VALUE)
+                                .addComponent(lblDate, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(127, 127, 127)
-                                .addComponent(btnRefresh))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(lblDate, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lblSubjectSched, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(54, 54, 54))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
+                                .addComponent(lblGreetings, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(cmbSubjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())))
+                                .addGap(18, 18, 18)
+                                .addComponent(btnFilter)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(btnRefresh)
+                                    .addComponent(btnLogOutAccount))))
+                        .addGap(52, 52, 52))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lblSubjectSched, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblDate, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
+                    .addComponent(lblDate, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblGreetings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbSubjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRefresh))
-                .addGap(6, 6, 6)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cmbSubjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnFilter))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmbSchedules, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnLogOutAccount)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRefresh)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(cmbDates, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 7, Short.MAX_VALUE))
         );
 
         pack();
@@ -188,11 +244,98 @@ public class TeacherForm extends javax.swing.JFrame {
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
         loadSelectedSubject();
     }//GEN-LAST:event_btnRefreshActionPerformed
+
+    private void btnFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFilterActionPerformed
+        // TODO add your handling code here:
+        int schedIndex = cmbSchedules.getSelectedIndex();
+        String selectedDate = (String) cmbDates.getSelectedItem();
+
+        if (schedIndex < 0 || selectedDate == null) {
+            JOptionPane.showMessageDialog(this, 
+                "Please select a valid schedule and date.", 
+                "Filter Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int subjectIndex = cmbSubjects.getSelectedIndex();
+        if (subjectIndex < 0 || subjects == null || subjects.isEmpty()) return;
+
+        Subject selectedSubject = subjects.get(subjectIndex);
+        ScheduleDAO scheduleDAO = new ScheduleDAO();
+        List<SubjectSchedule> schedules = scheduleDAO.getSchedulesBySubject(selectedSubject.getSubjectId());
+        if (schedIndex >= schedules.size()) return;
+
+        SubjectSchedule selectedSchedule = schedules.get(schedIndex);
+        AttendanceDAO attendanceDAO = new AttendanceDAO();
+
+        List<Attendance> records;
+        if ("All Dates".equals(selectedDate)) {
+            // Show all attendance for the selected schedule
+            records = attendanceDAO.getAttendanceBySchedule(selectedSchedule.getScheduleId());
+        } else {
+            // Show attendance only for the chosen date
+            records = attendanceDAO.getAttendanceByScheduleAndDate(
+                    selectedSchedule.getScheduleId(), LocalDate.parse(selectedDate));
+        }
+
+        DefaultTableModel model = (DefaultTableModel) tblAttendance.getModel();
+        model.setRowCount(0);
+        for (Attendance att : records) {
+            model.addRow(new Object[]{
+                att.getStudentName(),
+                att.getDate(),
+                att.getTimeIn(),
+                att.getTimeOut(),
+                att.getStatus(),
+                att.getRemarks()
+            });
+        }
+        
+    }//GEN-LAST:event_btnFilterActionPerformed
+
+    private void cmbSchedulesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSchedulesActionPerformed
+        // TODO add your handling code here:
+        int subjectIndex = cmbSubjects.getSelectedIndex();
+        int schedIndex = cmbSchedules.getSelectedIndex();
+
+        if (subjectIndex < 0 || schedIndex < 0 || subjects == null || subjects.isEmpty()) {
+            return;
+        }
+
+        Subject selectedSubject = subjects.get(subjectIndex);
+        ScheduleDAO scheduleDAO = new ScheduleDAO();
+        List<SubjectSchedule> schedules = scheduleDAO.getSchedulesBySubject(selectedSubject.getSubjectId());
+        if (schedIndex >= schedules.size()) return;
+
+        SubjectSchedule selectedSchedule = schedules.get(schedIndex);
+
+        refreshAttendanceTable(selectedSchedule);
+        loadDatesForSchedule(selectedSchedule.getScheduleId());
+    }//GEN-LAST:event_cmbSchedulesActionPerformed
+
+    private void btnLogOutAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutAccountActionPerformed
+        // TODO add your handling code here:
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to log out?",
+            "Logout Confirmation",
+            JOptionPane.YES_NO_OPTION
+        );
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            this.dispose();
+            
+            java.awt.EventQueue.invokeLater(() -> {
+                new LoginForm().setVisible(true);
+            });
+        }
+    }//GEN-LAST:event_btnLogOutAccountActionPerformed
+    
     private void loadSubjects() {
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
 
         SubjectDAO subjectDAO = new SubjectDAO();
-        subjects = subjectDAO.getAllSubjects();
+        subjects = subjectDAO.getSubjectsByTeacherId(currentUser.getUserId());
 
         for (Subject subj : subjects) {
             model.addElement(subj.getSubjectName() + " (" + subj.getSubjectCode() + ")");
@@ -204,81 +347,107 @@ public class TeacherForm extends javax.swing.JFrame {
         int index = cmbSubjects.getSelectedIndex();
         if (index >= 0 && subjects != null && !subjects.isEmpty()) {
             Subject selected = subjects.get(index);
-            refreshAttendanceTable(selected);
+            
+            loadSchedules(selected);
         }
     }
-    private void refreshAttendanceTable(Subject subject) {
-        DefaultTableModel model = (DefaultTableModel) tblAttendance.getModel();
-        model.setRowCount(0);
-
+    
+    private void loadSchedules(Subject subject) {
         ScheduleDAO scheduleDAO = new ScheduleDAO();
         List<SubjectSchedule> schedules = scheduleDAO.getSchedulesBySubject(subject.getSubjectId());
 
-        if (schedules.isEmpty()) {
-            System.out.println("No schedules found for subject: " + subject.getSubjectName());
-            return;
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        for (SubjectSchedule sched : schedules) {
+            String label = sched.getDayOfWeek() + " " + sched.getStartTime()+ " - " + sched.getEndTime();
+            model.addElement(label);
+        }
+        cmbSchedules.setModel(model);
+
+        // Load dates for the first schedule
+        if (!schedules.isEmpty()) {
+            cmbSchedules.setSelectedIndex(0);
+            SubjectSchedule defaultSchedule = schedules.get(0);
+
+            // Load only that schedule's attendance (not all)
+            refreshAttendanceTable(defaultSchedule);
+
+            // Load available dates for that specific schedule
+            loadDatesForSchedule(defaultSchedule.getScheduleId());
+        } else {
+            // No schedules — clear attendance table and date combo
+            DefaultTableModel tableModel = (DefaultTableModel) tblAttendance.getModel();
+            tableModel.setRowCount(0);
+            cmbDates.setModel(new DefaultComboBoxModel<>(new String[]{"No Dates"}));
+        }
+    }
+    
+    private void loadDatesForSchedule(int scheduleId) {
+        AttendanceDAO attendanceDAO = new AttendanceDAO();
+        List<LocalDate> availableDates = attendanceDAO.getAvailableDatesBySchedule(scheduleId);
+
+        DefaultComboBoxModel<String> dateModel = new DefaultComboBoxModel<>();
+        dateModel.addElement("All Dates"); // default option
+        for (LocalDate date : availableDates) {
+            dateModel.addElement(date.toString());
         }
 
-        SubjectSchedule schedule = schedules.get(0);
+        cmbDates.setModel(dateModel);
+    }
 
+    
+    private void refreshAttendanceTable(SubjectSchedule schedule) {
+        DefaultTableModel model = (DefaultTableModel) tblAttendance.getModel();
+        model.setRowCount(0);
         AttendanceDAO attendanceDAO = new AttendanceDAO();
-        List<Attendance> records = attendanceDAO.getAttendanceByScheduleAndDate(
-                schedule.getScheduleId(), LocalDate.now()
-        );
 
+        List<Attendance> records = attendanceDAO.getAttendanceBySchedule(schedule.getScheduleId());
         for (Attendance att : records) {
             model.addRow(new Object[]{
-                    att.getStudentName(),
-                    att.getTimeIn(),
-                    att.getTimeOut(),
-                    att.getStatus(),
-                    att.getRemarks()
+                att.getStudentName(),
+                att.getDate(),
+                att.getTimeIn(),
+                att.getTimeOut(),
+                att.getStatus(),
+                att.getRemarks()
             });
         }
     }
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TeacherForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TeacherForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TeacherForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TeacherForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TeacherForm().setVisible(true);
-            }
+    
+    private void startClock() {
+        javax.swing.Timer timer = new javax.swing.Timer(1000, e -> {
+            java.time.LocalDateTime now = java.time.LocalDateTime.now();
+            java.time.format.DateTimeFormatter fmt =
+                    java.time.format.DateTimeFormatter.ofPattern("EEEE MMMM dd, yyyy HH:mm:ss");
+            lblDate.setText(now.format(fmt));
+            
         });
+        timer.start();
     }
+    
+    private void setGreetings() {
+        TeacherDAO teacherDAO = new TeacherDAO();
+        Teacher teacher = teacherDAO.getTeacherByUserId(currentUser.getUserId());
+        
+        if (teacher != null) {
+            lblGreetings.setText("Hello, " + teacher.getFirstName() + "!");
+        } else {
+            lblGreetings.setText("Hello, Teacher");
+        }
+    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnFilter;
+    private javax.swing.JButton btnLogOutAccount;
     private javax.swing.JButton btnRefresh;
+    private javax.swing.JComboBox<String> cmbDates;
+    private javax.swing.JComboBox<String> cmbSchedules;
     private javax.swing.JComboBox<String> cmbSubjects;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblDate;
-    private javax.swing.JLabel lblSubjectSched;
+    private javax.swing.JLabel lblGreetings;
     private javax.swing.JTable tblAttendance;
     // End of variables declaration//GEN-END:variables
 }
