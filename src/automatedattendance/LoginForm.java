@@ -45,7 +45,6 @@ public class LoginForm extends javax.swing.JFrame {
         setAutoRequestFocus(false);
         setBackground(java.awt.Color.darkGray);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setPreferredSize(new java.awt.Dimension(550, 320));
         setResizable(false);
 
         label_appTitle.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N

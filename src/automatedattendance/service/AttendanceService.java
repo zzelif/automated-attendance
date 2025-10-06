@@ -65,28 +65,56 @@ public class AttendanceService {
         if (student.getUserId() != currentUser.getUserId()) 
             return "You can only log your own attendance.";
 
+        int subjectId = currentSchedule.getSubjectId();
+        if (!enrollmentsDAO.isStudentEnrolledInSubject(student.getStudentId(), subjectId)) {
+            return "You are not enrolled in this subject.";
+        }
+
         LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+
+        Attendance existing = attendanceDAO.getAttendanceByStudentScheduleDate(
+            student.getStudentId(),
+            currentSchedule.getScheduleId(),
+            today.toString()
+        );
+
+        if (existing == null) {
+            return "You need to time in first before timing out.";
+        }
+
         boolean success = attendanceDAO.logTimeOut(
-                student.getStudentId(),
-                currentSchedule.getScheduleId(),
-                today.toString(),
-                LocalTime.now().toString()
+            student.getStudentId(),
+            currentSchedule.getScheduleId(),
+            today,
+            now
         );
 
         if (success) {
-            
             LocalTime endTime = LocalTime.parse(currentSchedule.getEndTime());
-            if (LocalTime.now().isBefore(endTime)) {
-                Attendance att = attendanceDAO.getAttendanceByStudentScheduleDate(
-                        student.getStudentId(), currentSchedule.getScheduleId(), today.toString());
-                if (att != null) {
-                    attendanceDAO.updateRemarks(att.getAttendanceId(), AttendanceRemark.LEFT_EARLY.name());
+            boolean leftEarly = now.isBefore(endTime);
+
+            // Determine new remark
+            String newRemark;
+            if (leftEarly) {
+                if (existing.getRemarks() == AttendanceRemark.LATE) {
+                    newRemark = AttendanceRemark.LATE_AND_LEFT_EARLY.getDbValue();
+                } else if (existing.getRemarks() == AttendanceRemark.ON_TIME) {
+                    newRemark = AttendanceRemark.ON_TIME_AND_LEFT_EARLY.getDbValue();
+                } else {
+                    newRemark = AttendanceRemark.LEFT_EARLY.getDbValue();
                 }
+            } else {
+                newRemark = existing.getRemarks().getDbValue();
             }
+            attendanceDAO.updateRemarks(existing.getAttendanceId(), newRemark);
+
             return "Time-out successful!";
         }
+
         return "Error logging time out.";
     }
+
     
     public List<Attendance> getAttendanceForTeacher(int scheduleId, LocalDate date) {
         if (date != null) {

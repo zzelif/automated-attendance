@@ -11,6 +11,7 @@ import automatedattendance.model.SubjectSchedule;
 import automatedattendance.util.Enums.SubjectScheduleDayOfWeek;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -62,4 +63,35 @@ public class ScheduleDAO {
             e.printStackTrace();
         } return schedules;
     }
+    
+    public SubjectSchedule getScheduleForDateTime(LocalDateTime dateTime) {
+        final String sql = "SELECT * FROM subject_schedule " +
+                "WHERE day_of_week = ? " +
+                "AND ? BETWEEN start_time AND end_time LIMIT 1";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            String dayName = dateTime.getDayOfWeek().name();
+
+            stmt.setString(1, dayName);
+            stmt.setTime(2, java.sql.Time.valueOf(dateTime.toLocalTime()));
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new SubjectSchedule(
+                        rs.getInt("schedule_id"),
+                        rs.getInt("subject_id"),
+                        automatedattendance.util.Enums.SubjectScheduleDayOfWeek.valueOf(rs.getString("day_of_week").toUpperCase()),
+                        rs.getTime("start_time").toLocalTime().toString(),
+                        rs.getTime("end_time").toLocalTime().toString(),
+                        rs.getString("room")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
 }

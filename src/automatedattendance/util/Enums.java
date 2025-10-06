@@ -21,11 +21,33 @@ public class Enums {
     }
     
     public enum AttendanceRemark {
-        ON_TIME,
-        LATE,
-        LEFT_EARLY,
-        NO_RECORD,
-        EXCUSED
+        ON_TIME("ON TIME"),
+        LATE("LATE"),
+        LEFT_EARLY("LEFT EARLY"),
+        ON_TIME_AND_LEFT_EARLY("ON TIME AND LEFT EARLY"),
+        LATE_AND_LEFT_EARLY("LATE AND LEFT EARLY"),
+        NO_RECORD("NO RECORD"),
+        EXCUSED("EXCUSED");
+
+        private final String dbValue;
+
+        AttendanceRemark(String dbValue) {
+            this.dbValue = dbValue;
+        }
+
+        public String getDbValue() {
+            return dbValue;
+        }
+
+        public static AttendanceRemark fromDbValue(String dbValue) {
+            if (dbValue == null) return NO_RECORD;
+            for (AttendanceRemark remark : values()) {
+                if (remark.dbValue.equalsIgnoreCase(dbValue.trim())) {
+                    return remark;
+                }
+            }
+            return NO_RECORD;
+        }
     }
     
     public enum SubjectScheduleDayOfWeek {

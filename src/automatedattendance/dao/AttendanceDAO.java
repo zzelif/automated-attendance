@@ -35,7 +35,7 @@ public class AttendanceDAO {
             stmt.setDate(3, Date.valueOf(attendance.getDate()));
             stmt.setTime(4, attendance.getTimeIn() != null ? Time.valueOf(attendance.getTimeIn()) : null);
             stmt.setString(5, attendance.getStatus().name());
-            stmt.setString(6, attendance.getRemarks().name());
+            stmt.setString(6, attendance.getRemarks().getDbValue());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -44,7 +44,7 @@ public class AttendanceDAO {
         return false;
     }
     
-    public boolean logTimeOut(int studentId, int scheduleId, String date, String timeOut) {
+    public boolean logTimeOut(int studentId, int scheduleId, LocalDate date, LocalTime timeOut) {
         final String sql = "UPDATE attendance SET time_out = ? " +
                            "WHERE student_id = ? AND schedule_id = ? AND date = ? AND time_out IS NULL";
 
@@ -61,6 +61,7 @@ public class AttendanceDAO {
         }
         return false;
     }
+
     
     public boolean hasTimeIn(int studentId, int scheduleId, String date) {
         final String sql = "SELECT COUNT(*) FROM attendance " +
@@ -99,7 +100,7 @@ public class AttendanceDAO {
                     rs.getTime("time_in") != null ? rs.getTime("time_in").toLocalTime() : null,
                     rs.getTime("time_out") != null ? rs.getTime("time_out").toLocalTime() : null,
                     AttendanceStatus.valueOf(rs.getString("status")),
-                    AttendanceRemark.valueOf(rs.getString("remarks"))
+                    parseRemark(rs.getString("remarks"))
                 );
             }
         } catch (SQLException e) {
@@ -218,18 +219,17 @@ public class AttendanceDAO {
     
     public boolean updateRemarks(int attendanceId, String remark) {
         final String sql = "UPDATE attendance SET remarks = ? WHERE attendance_id = ?";
-
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, remark);
+            stmt.setString(1, remark); // exact ENUM value
             stmt.setInt(2, attendanceId);
-
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
+
     
     // Delete attendance (para lang sa delete ng crud, for demo sa teacher)
     public boolean deleteAttendance(int attendanceId) {
