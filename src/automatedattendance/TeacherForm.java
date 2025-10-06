@@ -64,6 +64,7 @@ public class TeacherForm extends javax.swing.JFrame {
         btnFilter = new javax.swing.JButton();
         btnLogOutAccount = new javax.swing.JButton();
         lblGreetings = new javax.swing.JLabel();
+        btnDeleteCell = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -89,26 +90,26 @@ public class TeacherForm extends javax.swing.JFrame {
         tblAttendance.setFont(new java.awt.Font("Century Gothic", 0, 11)); // NOI18N
         tblAttendance.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Name", "Date", "Time In", "Time Out", "Status", "Remarks"
+                "ID", "Name", "Date", "Time In", "Time Out", "Status", "Remarks"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class
+                java.lang.Object.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true, true
+                false, false, false, false, false, true, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -160,22 +161,25 @@ public class TeacherForm extends javax.swing.JFrame {
         lblGreetings.setForeground(new java.awt.Color(255, 255, 255));
         lblGreetings.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 
+        btnDeleteCell.setText("Delete");
+        btnDeleteCell.setToolTipText("");
+        btnDeleteCell.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteCellActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane1)
                         .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cmbSchedules, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmbDates, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(lblDate, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -191,7 +195,13 @@ public class TeacherForm extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(btnRefresh)
                                     .addComponent(btnLogOutAccount))))
-                        .addGap(52, 52, 52))))
+                        .addGap(52, 52, 52))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cmbSchedules, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmbDates, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnDeleteCell))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,11 +224,13 @@ public class TeacherForm extends javax.swing.JFrame {
                         .addComponent(btnLogOutAccount)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRefresh)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cmbDates, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(18, 18, 18)
+                .addComponent(btnDeleteCell)
+                .addContainerGap(117, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -233,7 +245,7 @@ public class TeacherForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 7, Short.MAX_VALUE))
+                .addGap(0, 27, Short.MAX_VALUE))
         );
 
         pack();
@@ -337,6 +349,40 @@ public class TeacherForm extends javax.swing.JFrame {
             });
         }
     }//GEN-LAST:event_btnLogOutAccountActionPerformed
+
+    private void btnDeleteCellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteCellActionPerformed
+        int row = tblAttendance.getSelectedRow();
+
+        if (row >= 0) {
+            DefaultTableModel model = (DefaultTableModel) tblAttendance.getModel();
+            int attendanceId = (int) model.getValueAt(row, 0);
+
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to delete this attendance record?",
+                "Confirm Deletion",
+                JOptionPane.YES_NO_OPTION
+            );
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                AttendanceDAO attendanceDAO = new AttendanceDAO();
+                boolean deleted = attendanceDAO.deleteAttendance(attendanceId);
+
+                if (deleted) {
+                    model.removeRow(row);
+                    JOptionPane.showMessageDialog(this, "Attendance deleted successfully.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to delete attendance.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(this, 
+                "Please select an attendance to delete.", 
+                "No Attendance Selected", 
+                JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_btnDeleteCellActionPerformed
     
     private void loadSubjects() {
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
@@ -410,6 +456,7 @@ public class TeacherForm extends javax.swing.JFrame {
         List<Attendance> records = attendanceDAO.getAttendanceBySchedule(schedule.getScheduleId());
         for (Attendance att : records) {
             model.addRow(new Object[]{
+                att.getAttendanceId(),
                 att.getStudentName(),
                 att.getDate(),
                 att.getTimeIn(),
@@ -418,6 +465,9 @@ public class TeacherForm extends javax.swing.JFrame {
                 att.getRemarks()
             });
         }
+        
+        tblAttendance.getColumnModel().getColumn(0).setMinWidth(0);
+        tblAttendance.getColumnModel().getColumn(0).setMaxWidth(0);
     }
     
     private void startClock() {
@@ -444,6 +494,7 @@ public class TeacherForm extends javax.swing.JFrame {
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDeleteCell;
     private javax.swing.JButton btnFilter;
     private javax.swing.JButton btnLogOutAccount;
     private javax.swing.JButton btnRefresh;
