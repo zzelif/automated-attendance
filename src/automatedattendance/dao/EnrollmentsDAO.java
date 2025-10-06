@@ -6,7 +6,6 @@
 
 package automatedattendance.dao;
 
-import automatedattendance.model.Enrollment;
 import automatedattendance.db.DatabaseConnection;
 
 import java.sql.*;

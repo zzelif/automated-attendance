@@ -217,11 +217,24 @@ public class AttendanceDAO {
         return false;
     }
     
+    public boolean updateStatus(int attendanceId, String status) {
+        final String sql = "UPDATE attendance SET status = ? WHERE attendance_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, status.toUpperCase());
+            stmt.setInt(2, attendanceId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
     public boolean updateRemarks(int attendanceId, String remark) {
         final String sql = "UPDATE attendance SET remarks = ? WHERE attendance_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, remark); // exact ENUM value
+            stmt.setString(1, remark);
             stmt.setInt(2, attendanceId);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
