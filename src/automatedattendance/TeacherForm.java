@@ -65,6 +65,10 @@ public class TeacherForm extends javax.swing.JFrame {
         btnLogOutAccount = new javax.swing.JButton();
         lblGreetings = new javax.swing.JLabel();
         btnDeleteCell = new javax.swing.JButton();
+        btnShowSummary = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblSummary = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -169,6 +173,44 @@ public class TeacherForm extends javax.swing.JFrame {
             }
         });
 
+        btnShowSummary.setText("Show Summary");
+        btnShowSummary.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnShowSummaryActionPerformed(evt);
+            }
+        });
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Summary Table"));
+
+        tblSummary.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "Date", "Subject", "Present", "Absent", "Late", "Total Attendees"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tblSummary);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -177,31 +219,41 @@ public class TeacherForm extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addContainerGap())
+                        .addComponent(cmbSchedules, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(lblDate, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
-                                .addComponent(lblGreetings, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(cmbSubjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnFilter)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(btnRefresh)
-                                    .addComponent(btnLogOutAccount))))
+                                    .addComponent(btnLogOutAccount)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(cmbDates, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(42, 42, 42)
+                                        .addComponent(btnFilter)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(btnDeleteCell)
+                                        .addGap(100, 100, 100))
+                                    .addComponent(lblDate, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 150, Short.MAX_VALUE)
+                                        .addComponent(lblGreetings, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(btnShowSummary)))))
                         .addGap(52, 52, 52))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cmbSchedules, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmbDates, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnDeleteCell))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1))
+                        .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -215,9 +267,7 @@ public class TeacherForm extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cmbSubjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnFilter))
+                        .addComponent(cmbSubjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cmbSchedules, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -225,27 +275,28 @@ public class TeacherForm extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRefresh)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmbDates, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(cmbDates, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnFilter)
+                        .addComponent(btnDeleteCell))
+                    .addComponent(btnShowSummary))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnDeleteCell)
-                .addContainerGap(117, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 27, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -258,10 +309,13 @@ public class TeacherForm extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         loadSubjects();
         loadSelectedSubject();
+
+//        jPanel2.setVisible(false);
     }//GEN-LAST:event_formWindowOpened
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
         loadSelectedSubject();
+//        jPanel2.setVisible(false);
     }//GEN-LAST:event_btnRefreshActionPerformed
 
     private void btnFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFilterActionPerformed
@@ -308,19 +362,21 @@ public class TeacherForm extends javax.swing.JFrame {
                 att.getStatus(),
                 att.getRemarks()
             });
-        }
-        
+        } 
     }//GEN-LAST:event_btnFilterActionPerformed
 
     private void cmbSchedulesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSchedulesActionPerformed
         // TODO add your handling code here:
+        getContentPane().remove(jScrollPane2);
+        revalidate();
+        repaint();
         int subjectIndex = cmbSubjects.getSelectedIndex();
         int schedIndex = cmbSchedules.getSelectedIndex();
 
         if (subjectIndex < 0 || schedIndex < 0 || subjects == null || subjects.isEmpty()) {
             return;
         }
-
+        
         Subject selectedSubject = subjects.get(subjectIndex);
         ScheduleDAO scheduleDAO = new ScheduleDAO();
         List<SubjectSchedule> schedules = scheduleDAO.getSchedulesBySubject(selectedSubject.getSubjectId());
@@ -383,6 +439,22 @@ public class TeacherForm extends javax.swing.JFrame {
                 JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_btnDeleteCellActionPerformed
+
+    private void btnShowSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowSummaryActionPerformed
+        int subjectIndex = cmbSubjects.getSelectedIndex();
+        int schedIndex = cmbSchedules.getSelectedIndex();
+        String selectedDate = (String) cmbDates.getSelectedItem();
+
+        Subject selectedSubject = subjects.get(subjectIndex);
+        ScheduleDAO scheduleDAO = new ScheduleDAO();
+        List<SubjectSchedule> schedules = scheduleDAO.getSchedulesBySubject(selectedSubject.getSubjectId());
+        if (schedIndex >= schedules.size()) return;
+
+        SubjectSchedule selectedSchedule = schedules.get(schedIndex);
+
+        populateSummaryTable(selectedSubject, selectedSchedule, selectedDate);
+//        jPanel2.setVisible(true);
+    }//GEN-LAST:event_btnShowSummaryActionPerformed
     
     private void loadSubjects() {
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
@@ -492,20 +564,72 @@ public class TeacherForm extends javax.swing.JFrame {
         }
     }
     
+    private void addSummaryRow(DefaultTableModel model, java.time.LocalDate date, Subject subject, List<Attendance> records) {
+    long present = records.stream()
+            .filter(a -> a.getStatus() != null && a.getStatus().name().equalsIgnoreCase("present"))
+            .count();
+    long absent = records.stream()
+            .filter(a -> a.getStatus() != null && a.getStatus().name().equalsIgnoreCase("absent"))
+            .count();
+    long late = records.stream()
+            .filter(a -> a.getRemarks() != null && a.getRemarks().name().equalsIgnoreCase("late"))
+            .count();
+    int total = records.size();
+
+    model.addRow(new Object[]{
+        date.toString(),
+        subject.getSubjectName(),
+        present,
+        absent,
+        late,
+        total
+    });
+}
+
+    private void populateSummaryTable(Subject subject, SubjectSchedule schedule, String dateOption) {
+    String[] cols = {"Date", "Subject", "Present", "Absent", "Late", "Total"};
+    DefaultTableModel summaryModel = new DefaultTableModel(cols, 0) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
+    tblSummary.setModel(summaryModel);
+
+    AttendanceDAO attendanceDAO = new AttendanceDAO();
+
+    if ("All Dates".equals(dateOption)) {
+        List<java.time.LocalDate> dates = attendanceDAO.getAvailableDatesBySchedule(schedule.getScheduleId());
+        for (java.time.LocalDate date : dates) {
+            List<Attendance> records = attendanceDAO.getAttendanceByScheduleAndDate(schedule.getScheduleId(), date);
+            addSummaryRow(summaryModel, date, subject, records);
+        }
+    } else {
+        java.time.LocalDate chosenDate = java.time.LocalDate.parse(dateOption);
+        List<Attendance> records = attendanceDAO.getAttendanceByScheduleAndDate(schedule.getScheduleId(), chosenDate);
+        addSummaryRow(summaryModel, chosenDate, subject, records);
+    }
+}
+
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDeleteCell;
     private javax.swing.JButton btnFilter;
     private javax.swing.JButton btnLogOutAccount;
     private javax.swing.JButton btnRefresh;
+    private javax.swing.JButton btnShowSummary;
     private javax.swing.JComboBox<String> cmbDates;
     private javax.swing.JComboBox<String> cmbSchedules;
     private javax.swing.JComboBox<String> cmbSubjects;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblDate;
     private javax.swing.JLabel lblGreetings;
     private javax.swing.JTable tblAttendance;
+    private javax.swing.JTable tblSummary;
     // End of variables declaration//GEN-END:variables
 }
