@@ -15,12 +15,17 @@ import automatedattendance.model.SubjectSchedule;
 import automatedattendance.model.Teacher;
 import automatedattendance.model.User;
 import automatedattendance.service.AttendanceService;
+import automatedattendance.util.Enums.AttendanceRemark;
+import automatedattendance.util.Enums.AttendanceStatus;
+import static automatedattendance.util.Enums.parseRemark;
 
 import java.time.LocalDate;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
 
 /**
  *
@@ -41,6 +46,7 @@ public class TeacherForm extends javax.swing.JFrame {
         initComponents();
         startClock();
         setGreetings();
+        setUpdateTableListener();
     }
 
     /**
@@ -90,6 +96,7 @@ public class TeacherForm extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("STUDENTS' ATTENDANCE");
 
+        tblAttendance.setAutoCreateRowSorter(true);
         tblAttendance.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         tblAttendance.setFont(new java.awt.Font("Century Gothic", 0, 11)); // NOI18N
         tblAttendance.setModel(new javax.swing.table.DefaultTableModel(
@@ -309,8 +316,8 @@ public class TeacherForm extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         loadSubjects();
         loadSelectedSubject();
-
-//        jPanel2.setVisible(false);
+        loadEditStatusRemarks();
+        //        jPanel2.setVisible(false);
     }//GEN-LAST:event_formWindowOpened
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
@@ -610,8 +617,85 @@ public class TeacherForm extends javax.swing.JFrame {
         addSummaryRow(summaryModel, chosenDate, subject, records);
     }
 }
+    private void loadEditStatusRemarks() {
 
+        JComboBox<AttendanceStatus> statusBox = new JComboBox<>(AttendanceStatus.values());
+        tblAttendance.getColumnModel().getColumn(5).setCellEditor(new DefaultCellEditor(statusBox));
+
+        JComboBox<AttendanceRemark> remarkBox = new JComboBox<>(AttendanceRemark.values());
+        tblAttendance.getColumnModel().getColumn(6).setCellEditor(new DefaultCellEditor(remarkBox));
+    }
     
+    private void setUpdateTableListener() {
+        
+        DefaultTableModel model = (DefaultTableModel) tblAttendance.getModel();
+        model.addTableModelListener(e -> {
+            int row = e.getFirstRow();
+            int column = e.getColumn();
+
+            if (column == 5 || column == 6) { // Status or Remarks
+                int attendanceId = (int) model.getValueAt(row, 0);
+                String newValue = model.getValueAt(row, column).toString();
+
+                Object timeIn = model.getValueAt(row, 3);
+                Object timeOut = model.getValueAt(row, 4);
+
+                AttendanceDAO attendanceDAO = new AttendanceDAO();
+                boolean success = false;
+
+                if (column == 5) {
+                    String newStatus = newValue.trim().toUpperCase();
+
+                    if ("ABSENT".equals(newStatus) && (timeIn != null || timeOut != null)) {
+                        JOptionPane.showMessageDialog(this,
+                            "Cannot mark as ABSENT — this student has a recorded attendance.",
+                            "Invalid Update", JOptionPane.WARNING_MESSAGE);
+                        refreshAttendanceTable(getSelectedSchedule());
+                        return;
+                    }
+
+                    success = attendanceDAO.updateStatus(attendanceId, newStatus);
+
+                } else if (column == 6) {
+                    AttendanceRemark selectedRemark;
+
+                    if (model.getValueAt(row, column) instanceof AttendanceRemark) {
+                        selectedRemark = (AttendanceRemark) model.getValueAt(row, column);
+                    } else {
+
+                        selectedRemark = parseRemark(newValue);
+                    }
+                    
+                    if (selectedRemark == AttendanceRemark.NO_RECORD && (timeIn != null || timeOut != null)) {
+                        JOptionPane.showMessageDialog(this,
+                            "Cannot set remark to 'NO RECORD' — this student has logged attendance.",
+                            "Invalid Update", JOptionPane.WARNING_MESSAGE);
+                        refreshAttendanceTable(getSelectedSchedule());
+                        return;
+                    }
+
+                    success = attendanceDAO.updateRemarks(attendanceId, selectedRemark.getDbValue());
+                }
+
+                if (success) {
+                    JOptionPane.showMessageDialog(this, "Record updated successfully!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to update record!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+    }
+    
+    private SubjectSchedule getSelectedSchedule() {
+        int subjectIndex = cmbSubjects.getSelectedIndex();
+        int schedIndex = cmbSchedules.getSelectedIndex();
+        if (subjectIndex < 0 || schedIndex < 0) return null;
+
+        Subject selectedSubject = subjects.get(subjectIndex);
+        ScheduleDAO scheduleDAO = new ScheduleDAO();
+        List<SubjectSchedule> schedules = scheduleDAO.getSchedulesBySubject(selectedSubject.getSubjectId());
+        return schedules.get(schedIndex);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDeleteCell;

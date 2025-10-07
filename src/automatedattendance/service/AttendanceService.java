@@ -51,7 +51,9 @@ public class AttendanceService {
         attendance.setStatus(AttendanceStatus.PRESENT);
         
         LocalTime startTime = LocalTime.parse(currentSchedule.getStartTime());
-        attendance.setRemarks(LocalTime.now().isAfter(startTime) ? AttendanceRemark.LATE : AttendanceRemark.ON_TIME);
+        LocalTime graceTime = startTime.plusMinutes(30);
+        LocalTime now = LocalTime.now();
+        attendance.setRemarks(now.isAfter(graceTime) ? AttendanceRemark.LATE : AttendanceRemark.ON_TIME);
 
         return attendanceDAO.logTimeIn(attendance) ? "Time-in successful!" : "Error logging time in.";
     }
