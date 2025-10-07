@@ -136,7 +136,8 @@ public class AttendanceService {
                     schedule.getScheduleId(),
                     today.toString()
             );
-            if (att == null) {
+
+            if (att == null) { 
                 Attendance absent = new Attendance(
                         0,
                         s.getStudentId(),
@@ -147,10 +148,15 @@ public class AttendanceService {
                         AttendanceStatus.ABSENT,
                         AttendanceRemark.NO_RECORD
                 );
-                attendanceDAO.insertAbsent(absent);
+
+                boolean success = attendanceDAO.insertAbsent(absent);
+                if (!success) {
+                    System.err.println("Failed to insert absent for student_id: " + s.getStudentId());
+                }
             }
         }
     }
+
     
     public boolean updateRemarks(int attendanceId, AttendanceRemark remark) {
         return attendanceDAO.updateRemarks(attendanceId, remark.name());

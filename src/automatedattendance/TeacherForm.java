@@ -7,9 +7,11 @@ package automatedattendance;
 
 import automatedattendance.dao.AttendanceDAO;
 import automatedattendance.dao.ScheduleDAO;
+import automatedattendance.dao.StudentsDAO;
 import automatedattendance.dao.SubjectDAO;
 import automatedattendance.dao.TeacherDAO;
 import automatedattendance.model.Attendance;
+import automatedattendance.model.Student;
 import automatedattendance.model.Subject;
 import automatedattendance.model.SubjectSchedule;
 import automatedattendance.model.Teacher;
@@ -32,13 +34,14 @@ import javax.swing.JComboBox;
  * @author Puddles
  */
 public class TeacherForm extends javax.swing.JFrame {
+
     private User currentUser;
     private List<Subject> subjects;
     AttendanceService getAttendance = new AttendanceService();
-    
 
     /**
      * Creates new form TeacherForm
+     *
      * @param currentUser
      */
     public TeacherForm(User currentUser) {
@@ -46,7 +49,7 @@ public class TeacherForm extends javax.swing.JFrame {
         initComponents();
         startClock();
         setGreetings();
-        setUpdateTableListener();
+        //setUpdateTableListener();
     }
 
     /**
@@ -75,6 +78,8 @@ public class TeacherForm extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblSummary = new javax.swing.JTable();
+        btnUpdateCell = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -218,6 +223,20 @@ public class TeacherForm extends javax.swing.JFrame {
             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
+        btnUpdateCell.setText("Update");
+        btnUpdateCell.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateCellActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Absent");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -232,29 +251,33 @@ public class TeacherForm extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(cmbSubjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(btnFilter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(btnRefresh)
-                                    .addComponent(btnLogOutAccount)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnRefresh, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(btnLogOutAccount, javax.swing.GroupLayout.Alignment.TRAILING)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(cmbDates, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(42, 42, 42)
-                                        .addComponent(btnFilter)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(btnDeleteCell)
-                                        .addGap(100, 100, 100))
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnShowSummary)
+                                        .addGap(143, 143, 143))
                                     .addComponent(lblDate, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 150, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(lblGreetings, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(btnShowSummary)))))
+                                        .addComponent(btnDeleteCell)
+                                        .addGap(20, 20, 20)
+                                        .addComponent(btnUpdateCell, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addGap(52, 52, 52))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -274,9 +297,13 @@ public class TeacherForm extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(cmbSubjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cmbSubjects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnFilter))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbSchedules, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cmbSchedules, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton1)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnLogOutAccount)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -285,9 +312,10 @@ public class TeacherForm extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(cmbDates, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnFilter)
-                        .addComponent(btnDeleteCell))
-                    .addComponent(btnShowSummary))
+                        .addComponent(btnShowSummary))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnDeleteCell)
+                        .addComponent(btnUpdateCell)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -331,21 +359,28 @@ public class TeacherForm extends javax.swing.JFrame {
         String selectedDate = (String) cmbDates.getSelectedItem();
 
         if (schedIndex < 0 || selectedDate == null) {
-            JOptionPane.showMessageDialog(this, 
-                "Please select a valid schedule and date.", 
-                "Filter Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Please select a valid schedule and date.",
+                    "Filter Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         int subjectIndex = cmbSubjects.getSelectedIndex();
-        if (subjectIndex < 0 || subjects == null || subjects.isEmpty()) return;
+        if (subjectIndex < 0 || subjects == null || subjects.isEmpty()) {
+            return;
+        }
 
         Subject selectedSubject = subjects.get(subjectIndex);
         ScheduleDAO scheduleDAO = new ScheduleDAO();
         List<SubjectSchedule> schedules = scheduleDAO.getSchedulesBySubject(selectedSubject.getSubjectId());
-        if (schedIndex >= schedules.size()) return;
+        if (schedIndex >= schedules.size()) {
+            return;
+        }
 
         SubjectSchedule selectedSchedule = schedules.get(schedIndex);
+//        AttendanceService attendanceService = new AttendanceService();
+//        attendanceService.markAbsentees(selectedSchedule);
+        
         AttendanceDAO attendanceDAO = new AttendanceDAO();
 
         List<Attendance> records;
@@ -362,6 +397,7 @@ public class TeacherForm extends javax.swing.JFrame {
         model.setRowCount(0);
         for (Attendance att : records) {
             model.addRow(new Object[]{
+                att.getAttendanceId(),
                 att.getStudentName(),
                 att.getDate(),
                 att.getTimeIn(),
@@ -369,7 +405,7 @@ public class TeacherForm extends javax.swing.JFrame {
                 att.getStatus(),
                 att.getRemarks()
             });
-        } 
+        }
     }//GEN-LAST:event_btnFilterActionPerformed
 
     private void cmbSchedulesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSchedulesActionPerformed
@@ -383,11 +419,13 @@ public class TeacherForm extends javax.swing.JFrame {
         if (subjectIndex < 0 || schedIndex < 0 || subjects == null || subjects.isEmpty()) {
             return;
         }
-        
+
         Subject selectedSubject = subjects.get(subjectIndex);
         ScheduleDAO scheduleDAO = new ScheduleDAO();
         List<SubjectSchedule> schedules = scheduleDAO.getSchedulesBySubject(selectedSubject.getSubjectId());
-        if (schedIndex >= schedules.size()) return;
+        if (schedIndex >= schedules.size()) {
+            return;
+        }
 
         SubjectSchedule selectedSchedule = schedules.get(schedIndex);
 
@@ -398,15 +436,15 @@ public class TeacherForm extends javax.swing.JFrame {
     private void btnLogOutAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutAccountActionPerformed
         // TODO add your handling code here:
         int confirm = JOptionPane.showConfirmDialog(
-            this,
-            "Are you sure you want to log out?",
-            "Logout Confirmation",
-            JOptionPane.YES_NO_OPTION
+                this,
+                "Are you sure you want to log out?",
+                "Logout Confirmation",
+                JOptionPane.YES_NO_OPTION
         );
-        
+
         if (confirm == JOptionPane.YES_OPTION) {
             this.dispose();
-            
+
             java.awt.EventQueue.invokeLater(() -> {
                 new LoginForm().setVisible(true);
             });
@@ -421,10 +459,10 @@ public class TeacherForm extends javax.swing.JFrame {
             int attendanceId = (int) model.getValueAt(row, 0);
 
             int confirm = JOptionPane.showConfirmDialog(
-                this,
-                "Are you sure you want to delete this attendance record?",
-                "Confirm Deletion",
-                JOptionPane.YES_NO_OPTION
+                    this,
+                    "Are you sure you want to delete this attendance record?",
+                    "Confirm Deletion",
+                    JOptionPane.YES_NO_OPTION
             );
 
             if (confirm == JOptionPane.YES_OPTION) {
@@ -440,10 +478,10 @@ public class TeacherForm extends javax.swing.JFrame {
             }
 
         } else {
-            JOptionPane.showMessageDialog(this, 
-                "Please select an attendance to delete.", 
-                "No Attendance Selected", 
-                JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Please select an attendance to delete.",
+                    "No Attendance Selected",
+                    JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_btnDeleteCellActionPerformed
 
@@ -455,15 +493,83 @@ public class TeacherForm extends javax.swing.JFrame {
         Subject selectedSubject = subjects.get(subjectIndex);
         ScheduleDAO scheduleDAO = new ScheduleDAO();
         List<SubjectSchedule> schedules = scheduleDAO.getSchedulesBySubject(selectedSubject.getSubjectId());
-        if (schedIndex >= schedules.size()) return;
+        if (schedIndex >= schedules.size()) {
+            return;
+        }
 
         SubjectSchedule selectedSchedule = schedules.get(schedIndex);
 
         populateSummaryTable(selectedSubject, selectedSchedule, selectedDate);
 //        jPanel2.setVisible(true);
     }//GEN-LAST:event_btnShowSummaryActionPerformed
+
+    private void btnUpdateCellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateCellActionPerformed
+        // TODO add your handling code here:
+        int row = tblAttendance.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Please select a cell to update.", "No selection",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        DefaultTableModel model = (DefaultTableModel) tblAttendance.getModel();
+        int attendanceId = (int) model.getValueAt(row, 0);
+        Object timeIn = model.getValueAt(row, 3);
+        Object timeOut = model.getValueAt(row, 4);
+        String statusValue = model.getValueAt(row, 5).toString();
+        String remarkValue = model.getValueAt(row, 6).toString();
+        AttendanceDAO attendanceDAO = new AttendanceDAO();
+// --- VALIDATION for STATUS --- 
+        if ("ABSENT".equalsIgnoreCase(statusValue) && (timeIn != null || timeOut != null)) {
+            JOptionPane.showMessageDialog(this,
+                    "Cannot mark as ABSENT — this student has recorded attendance.",
+                    "Invalid Update", JOptionPane.WARNING_MESSAGE);
+            refreshAttendanceTable(getSelectedSchedule());
+            return;
+        }
+// --- VALIDATION for REMARKS --- 
+        AttendanceRemark selectedRemark = parseRemark(remarkValue);
+        if (selectedRemark == AttendanceRemark.NO_RECORD && (timeIn != null || timeOut != null)) {
+            JOptionPane.showMessageDialog(this,
+                    "Cannot set remark to 'NO RECORD' — this student has logged attendance.",
+                    "Invalid Update", JOptionPane.WARNING_MESSAGE);
+            refreshAttendanceTable(getSelectedSchedule());
+            return;
+        }
+        boolean statusUpdated = attendanceDAO.updateStatus(attendanceId, statusValue);
+        boolean remarkUpdated = attendanceDAO.updateRemarks(attendanceId, selectedRemark.getDbValue());
+        if (statusUpdated || remarkUpdated) {
+            JOptionPane.showMessageDialog(this, "Attendance record updated successfully!", "Update Successful", JOptionPane.INFORMATION_MESSAGE);
+            refreshAttendanceTable(getSelectedSchedule());
+        } else {
+            JOptionPane.showMessageDialog(this, "No changes were applied. Please check your edits.", "Update Failed", JOptionPane.WARNING_MESSAGE);
+        }
     
-    private void loadSubjects() {
+    }//GEN-LAST:event_btnUpdateCellActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        SubjectSchedule selectedSchedule = getSelectedSchedule();
+        if (selectedSchedule == null) {
+            JOptionPane.showMessageDialog(this, "Please select a schedule first.");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "Mark all students who didn't log in as absent for today?",
+            "Confirm Mark Absences",
+            JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            AttendanceService attendanceService = new AttendanceService();
+            attendanceService.markAbsentees(selectedSchedule);
+            refreshAttendanceTable(selectedSchedule);
+            JOptionPane.showMessageDialog(this, "Absences marked successfully!");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+private void loadSubjects() {
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
 
         SubjectDAO subjectDAO = new SubjectDAO();
@@ -474,23 +580,23 @@ public class TeacherForm extends javax.swing.JFrame {
         }
         cmbSubjects.setModel(model);
     }
-    
+
     private void loadSelectedSubject() {
         int index = cmbSubjects.getSelectedIndex();
         if (index >= 0 && subjects != null && !subjects.isEmpty()) {
             Subject selected = subjects.get(index);
-            
+
             loadSchedules(selected);
         }
     }
-    
+
     private void loadSchedules(Subject subject) {
         ScheduleDAO scheduleDAO = new ScheduleDAO();
         List<SubjectSchedule> schedules = scheduleDAO.getSchedulesBySubject(subject.getSubjectId());
 
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
         for (SubjectSchedule sched : schedules) {
-            String label = sched.getDayOfWeek() + " " + sched.getStartTime()+ " - " + sched.getEndTime();
+            String label = sched.getDayOfWeek() + " " + sched.getStartTime() + " - " + sched.getEndTime();
             model.addElement(label);
         }
         cmbSchedules.setModel(model);
@@ -512,7 +618,7 @@ public class TeacherForm extends javax.swing.JFrame {
             cmbDates.setModel(new DefaultComboBoxModel<>(new String[]{"No Dates"}));
         }
     }
-    
+
     private void loadDatesForSchedule(int scheduleId) {
         AttendanceDAO attendanceDAO = new AttendanceDAO();
         List<LocalDate> availableDates = attendanceDAO.getAvailableDatesBySchedule(scheduleId);
@@ -526,97 +632,125 @@ public class TeacherForm extends javax.swing.JFrame {
         cmbDates.setModel(dateModel);
     }
 
-    
     private void refreshAttendanceTable(SubjectSchedule schedule) {
         DefaultTableModel model = (DefaultTableModel) tblAttendance.getModel();
         model.setRowCount(0);
-        AttendanceDAO attendanceDAO = new AttendanceDAO();
 
+        AttendanceDAO attendanceDAO = new AttendanceDAO();
+        StudentsDAO studentsDAO = new StudentsDAO();
+
+        List<Student> enrolledStudents = studentsDAO.getStudentsBySubject(schedule.getSubjectId()); // ✅ FIXED
         List<Attendance> records = attendanceDAO.getAttendanceBySchedule(schedule.getScheduleId());
-        for (Attendance att : records) {
-            model.addRow(new Object[]{
-                att.getAttendanceId(),
-                att.getStudentName(),
-                att.getDate(),
-                att.getTimeIn(),
-                att.getTimeOut(),
-                att.getStatus(),
-                att.getRemarks()
-            });
+
+        for (Student student : enrolledStudents) {
+            Attendance match = records.stream()
+                .filter(a -> a.getStudentId() == student.getStudentId())
+                .findFirst()
+                .orElse(null);
+
+            if (match != null) {
+                model.addRow(new Object[]{
+                    match.getAttendanceId(),
+                    student.getFirstName() + " " + student.getLastName(),
+                    match.getDate(),
+                    match.getTimeIn(),
+                    match.getTimeOut(),
+                    match.getStatus(),
+                    match.getRemarks()
+                });
+            } else {
+                // Student enrolled but not logged → still show, unrecorded
+                model.addRow(new Object[]{
+                    "—",
+                    student.getFirstName() + " " + student.getLastName(),
+                    LocalDate.now(),
+                    null,
+                    null,
+                    AttendanceStatus.ABSENT,
+                    AttendanceRemark.NO_RECORD
+                });
+            }
         }
-        
+
         tblAttendance.getColumnModel().getColumn(0).setMinWidth(0);
         tblAttendance.getColumnModel().getColumn(0).setMaxWidth(0);
     }
-    
+
+
     private void startClock() {
         javax.swing.Timer timer = new javax.swing.Timer(1000, e -> {
             java.time.LocalDateTime now = java.time.LocalDateTime.now();
-            java.time.format.DateTimeFormatter fmt =
-                    java.time.format.DateTimeFormatter.ofPattern("EEEE MMMM dd, yyyy HH:mm:ss");
+            java.time.format.DateTimeFormatter fmt
+                    = java.time.format.DateTimeFormatter.ofPattern("EEEE MMMM dd, yyyy HH:mm:ss");
             lblDate.setText(now.format(fmt));
-            
+
         });
         timer.start();
     }
-    
+
     private void setGreetings() {
         TeacherDAO teacherDAO = new TeacherDAO();
         Teacher teacher = teacherDAO.getTeacherByUserId(currentUser.getUserId());
-        
+
         if (teacher != null) {
             lblGreetings.setText("Hello, " + teacher.getFirstName() + "!");
         } else {
             lblGreetings.setText("Hello, Teacher");
         }
     }
-    
-    private void addSummaryRow(DefaultTableModel model, java.time.LocalDate date, Subject subject, List<Attendance> records) {
-    long present = records.stream()
-            .filter(a -> a.getStatus() != null && a.getStatus().name().equalsIgnoreCase("present"))
-            .count();
-    long absent = records.stream()
-            .filter(a -> a.getStatus() != null && a.getStatus().name().equalsIgnoreCase("absent"))
-            .count();
-    long late = records.stream()
-            .filter(a -> a.getRemarks() != null && a.getRemarks().name().equalsIgnoreCase("late"))
-            .count();
-    int total = records.size();
 
-    model.addRow(new Object[]{
-        date.toString(),
-        subject.getSubjectName(),
-        present,
-        absent,
-        late,
-        total
-    });
-}
+    private void addSummaryRow(DefaultTableModel model, java.time.LocalDate date, Subject subject, List<Attendance> records) {
+        long present = records.stream()
+                .filter(a -> a.getStatus() != null && a.getStatus() == AttendanceStatus.PRESENT)
+                .count();
+
+        long absent = records.stream()
+                .filter(a -> a.getStatus() != null && a.getStatus() == AttendanceStatus.ABSENT)
+                .count();
+
+        long late = records.stream()
+                .filter(a -> a.getRemarks() != null && 
+                       (a.getRemarks() == AttendanceRemark.LATE || 
+                        a.getRemarks() == AttendanceRemark.LATE_AND_LEFT_EARLY))
+                .count();
+
+        int total = records.size();
+
+        model.addRow(new Object[]{
+            date.toString(),
+            subject.getSubjectName(),
+            present,
+            absent,
+            late,
+            total
+        });
+    }
 
     private void populateSummaryTable(Subject subject, SubjectSchedule schedule, String dateOption) {
-    String[] cols = {"Date", "Subject", "Present", "Absent", "Late", "Total"};
-    DefaultTableModel summaryModel = new DefaultTableModel(cols, 0) {
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return false;
-        }
-    };
-    tblSummary.setModel(summaryModel);
+        String[] cols = {"Date", "Subject", "Present", "Absent", "Late", "Total"};
+        DefaultTableModel summaryModel = new DefaultTableModel(cols, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tblSummary.setModel(summaryModel);
 
-    AttendanceDAO attendanceDAO = new AttendanceDAO();
+        AttendanceDAO attendanceDAO = new AttendanceDAO();
 
-    if ("All Dates".equals(dateOption)) {
-        List<java.time.LocalDate> dates = attendanceDAO.getAvailableDatesBySchedule(schedule.getScheduleId());
-        for (java.time.LocalDate date : dates) {
-            List<Attendance> records = attendanceDAO.getAttendanceByScheduleAndDate(schedule.getScheduleId(), date);
-            addSummaryRow(summaryModel, date, subject, records);
+        if ("All Dates".equals(dateOption)) {
+            List<java.time.LocalDate> dates = attendanceDAO.getAvailableDatesBySchedule(schedule.getScheduleId());
+            for (java.time.LocalDate date : dates) {
+                List<Attendance> records = attendanceDAO.getAttendanceByScheduleAndDate(schedule.getScheduleId(), date);
+                addSummaryRow(summaryModel, date, subject, records);
+            }
+        } else {
+            java.time.LocalDate chosenDate = java.time.LocalDate.parse(dateOption);
+            List<Attendance> records = attendanceDAO.getAttendanceByScheduleAndDate(schedule.getScheduleId(), chosenDate);
+            addSummaryRow(summaryModel, chosenDate, subject, records);
         }
-    } else {
-        java.time.LocalDate chosenDate = java.time.LocalDate.parse(dateOption);
-        List<Attendance> records = attendanceDAO.getAttendanceByScheduleAndDate(schedule.getScheduleId(), chosenDate);
-        addSummaryRow(summaryModel, chosenDate, subject, records);
     }
-}
+
     private void loadEditStatusRemarks() {
 
         JComboBox<AttendanceStatus> statusBox = new JComboBox<>(AttendanceStatus.values());
@@ -625,9 +759,9 @@ public class TeacherForm extends javax.swing.JFrame {
         JComboBox<AttendanceRemark> remarkBox = new JComboBox<>(AttendanceRemark.values());
         tblAttendance.getColumnModel().getColumn(6).setCellEditor(new DefaultCellEditor(remarkBox));
     }
-    
+
     private void setUpdateTableListener() {
-        
+
         DefaultTableModel model = (DefaultTableModel) tblAttendance.getModel();
         model.addTableModelListener(e -> {
             int row = e.getFirstRow();
@@ -648,8 +782,8 @@ public class TeacherForm extends javax.swing.JFrame {
 
                     if ("ABSENT".equals(newStatus) && (timeIn != null || timeOut != null)) {
                         JOptionPane.showMessageDialog(this,
-                            "Cannot mark as ABSENT — this student has a recorded attendance.",
-                            "Invalid Update", JOptionPane.WARNING_MESSAGE);
+                                "Cannot mark as ABSENT — this student has a recorded attendance.",
+                                "Invalid Update", JOptionPane.WARNING_MESSAGE);
                         refreshAttendanceTable(getSelectedSchedule());
                         return;
                     }
@@ -665,11 +799,11 @@ public class TeacherForm extends javax.swing.JFrame {
 
                         selectedRemark = parseRemark(newValue);
                     }
-                    
+
                     if (selectedRemark == AttendanceRemark.NO_RECORD && (timeIn != null || timeOut != null)) {
                         JOptionPane.showMessageDialog(this,
-                            "Cannot set remark to 'NO RECORD' — this student has logged attendance.",
-                            "Invalid Update", JOptionPane.WARNING_MESSAGE);
+                                "Cannot set remark to 'NO RECORD' — this student has logged attendance.",
+                                "Invalid Update", JOptionPane.WARNING_MESSAGE);
                         refreshAttendanceTable(getSelectedSchedule());
                         return;
                     }
@@ -685,11 +819,13 @@ public class TeacherForm extends javax.swing.JFrame {
             }
         });
     }
-    
+
     private SubjectSchedule getSelectedSchedule() {
         int subjectIndex = cmbSubjects.getSelectedIndex();
         int schedIndex = cmbSchedules.getSelectedIndex();
-        if (subjectIndex < 0 || schedIndex < 0) return null;
+        if (subjectIndex < 0 || schedIndex < 0) {
+            return null;
+        }
 
         Subject selectedSubject = subjects.get(subjectIndex);
         ScheduleDAO scheduleDAO = new ScheduleDAO();
@@ -703,9 +839,11 @@ public class TeacherForm extends javax.swing.JFrame {
     private javax.swing.JButton btnLogOutAccount;
     private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnShowSummary;
+    private javax.swing.JButton btnUpdateCell;
     private javax.swing.JComboBox<String> cmbDates;
     private javax.swing.JComboBox<String> cmbSchedules;
     private javax.swing.JComboBox<String> cmbSubjects;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

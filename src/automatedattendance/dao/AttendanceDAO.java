@@ -208,7 +208,7 @@ public class AttendanceDAO {
             stmt.setInt(2, attendance.getScheduleId());
             stmt.setDate(3, Date.valueOf(attendance.getDate()));
             stmt.setString(4, attendance.getStatus().name());
-            stmt.setString(5, attendance.getRemarks().name());
+            stmt.setString(5, attendance.getRemarks().getDbValue());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
