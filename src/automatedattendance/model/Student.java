@@ -15,6 +15,7 @@ public class Student {
     private int userId;
     private String firstName;
     private String lastName;
+    private String studentName;
     private String course;
     private int yearLevel;
 
@@ -45,6 +46,9 @@ public class Student {
 
     public String getLastName() { return lastName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
+    
+    public String getStudentName() { return studentName; }
+    public void setStudentName(String studentName) { this.studentName = studentName; }
 
     public String getCourse() { return course; }
     public void setCourse(String course) { this.course = course; }
